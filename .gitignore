@@ -107,6 +107,7 @@ scratch
 
 #tests
 /dbtest
+/data/db/diagnostic.data/
 /authTest
 /perftest
 /clientTest
