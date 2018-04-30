@@ -34,7 +34,7 @@ let data = req.body.formData
 const title = data.main.title;
 const type = data.main.type;
 const country = data.adress.country;
-const region = data.adress.region;
+const regions = data.adress.region;
 const area = data.adress.area;
 const place = data.adress.place;
 const priceType = data.priceType;
@@ -45,7 +45,7 @@ const description=data.description
 const medDescription =data.medDescription
 
 
-const  obj = new BookingObject({title, type, country, region,area, place, priceType,childrenRange,rooms,description,medDescription})
+const  obj = new BookingObject({title, type, country, regions,area, place, priceType,childrenRange,rooms,description,medDescription})
 
 console.log (obj)
 
@@ -67,13 +67,52 @@ res.send ({status: false, message: 'cant insert', data: addingObject})
 // search
 
 app.post ('/search', async function (req, res){
-console.log ('got REUQEST')
-console.log (req.body)
 
-const forDisplay = await BookingObject.find ({})
+const { title, type,country, region, adult,children,dateCheckIn ,dateCheckOut} = req.body.serchData
+
+console.log (region)
+
+let accomadation =  (children) ? adult+'+'+children: adult
+
+console.log (accomadation)
+
+const forDisplay = await BookingObject.find ({$or : [{regions: region}, {title: title}]})
+
 
 
 if (forDisplay) {
+
+const roomsCheck =  forDisplay.map ((x)=>{
+
+for (var i = 0 ; i<x.rooms.length; i++) {
+
+console.log (x.rooms[i].accommodation.indexOf ())
+console.log (typeof accomadation)
+console.log (x.rooms[i].accommodation)
+console.log (typeof accomadation)
+
+  if (x.rooms[i].accommodation.indexOf (accomadation) != -1 ) {
+
+  console.log ('true')
+
+
+  }
+
+   }
+
+
+
+})
+
+
+
+if (roomsCheck){
+
+console.log (roomsCheck)
+
+}else {
+  console.log ('no roomsCheck')
+}
 
 res.send ({status: true, message: 'find some to display', data:forDisplay })
 } else {
