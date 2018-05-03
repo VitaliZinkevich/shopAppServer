@@ -74,8 +74,6 @@ console.log (region)
 
 let accomadation =  (children) ? adult+'+'+children: adult
 
-console.log (accomadation)
-
 const forDisplay = await BookingObject.find ({$or : [{regions: region}, {title: title}]})
 
 
@@ -86,33 +84,26 @@ const roomsCheck =  forDisplay.map ((x)=>{
 
 for (var i = 0 ; i<x.rooms.length; i++) {
 
-console.log (x.rooms[i].accommodation.indexOf ())
-console.log (typeof accomadation)
-console.log (x.rooms[i].accommodation)
-console.log (typeof accomadation)
 
-  if (x.rooms[i].accommodation.indexOf (accomadation) != -1 ) {
+if (x.rooms[i].accommodation.indexOf (accomadation) != -1) {
 
-  console.log ('true')
+console.log ('good')
 
+} else {
 
-  }
+console.log ('bad')
+
+}
+
 
    }
 
 
 
 })
-
-
-
-if (roomsCheck){
-
 console.log (roomsCheck)
 
-}else {
-  console.log ('no roomsCheck')
-}
+
 
 res.send ({status: true, message: 'find some to display', data:forDisplay })
 } else {
