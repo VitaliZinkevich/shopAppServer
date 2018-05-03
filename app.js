@@ -27,7 +27,7 @@ app.listen(3000, ()=>console.log('listen on 3000'));
 
 app.post ('/test',async function (req, res) {
 let data = req.body.formData
-//console.log (data)
+
 
 
 
@@ -70,8 +70,6 @@ app.post ('/search', async function (req, res){
 
 const { title, type,country, region, adult,children,dateCheckIn ,dateCheckOut} = req.body.serchData
 
-console.log (region)
-
 let accomadation =  (children) ? adult+'+'+children: adult
 
 const forDisplay = await BookingObject.find ({$or : [{regions: region}, {title: title}]})
@@ -80,35 +78,21 @@ const forDisplay = await BookingObject.find ({$or : [{regions: region}, {title: 
 
 if (forDisplay) {
 
-const roomsCheck =  forDisplay.map ((x)=>{
-
-for (var i = 0 ; i<x.rooms.length; i++) {
+forDisplay.map ((x)=>{
 
 
+for (var i = 0 ; i<x.rooms.length; ) {
 if (x.rooms[i].accommodation.indexOf (accomadation) != -1) {
-
-console.log ('good')
-
+i++
 } else {
-
-console.log ('bad')
-
+x.rooms.splice (i,1)
+i = 0;
+  }
 }
-
-
-   }
-
-
-
 })
-console.log (roomsCheck)
-
-
 
 res.send ({status: true, message: 'find some to display', data:forDisplay })
 } else {
 res.send ({status: false, message: 'got no to display by this search cond'})
 }
-
-
 })
