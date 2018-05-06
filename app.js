@@ -77,11 +77,12 @@ const forDisplay = await BookingObject.find ({$or : [{regions: region}, {title: 
 
 
 if (forDisplay) {
-
+console.log (forDisplay)
 forDisplay.map ((x)=>{
 
 
 for (var i = 0 ; i<x.rooms.length; ) {
+  console.log (x.rooms[i].accommodation)
 if (x.rooms[i].accommodation.indexOf (accomadation) != -1) {
 i++
 } else {
@@ -93,6 +94,6 @@ i = 0;
 
 res.send ({status: true, message: 'find some to display', data:forDisplay })
 } else {
-res.send ({status: false, message: 'got no to display by this search cond'})
+res.send ({status: false, message: 'got no to display by this search cond', data: {} })
 }
 })
