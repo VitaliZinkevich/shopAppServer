@@ -66,6 +66,46 @@ res.send ({status: false, message: 'cant insert', data: addingObject})
 
 // search
 
+app.get ('/forsearchprimarydata', function (req, res) {
+
+
+  const MongoClient = require('mongodb').MongoClient;
+  const assert = require('assert');
+
+  // Connection URL
+  const url = 'mongodb://localhost:27017';
+
+  // Database Name
+  const dbName = 'myproject';
+
+  // Use connect method to connect to the server
+  MongoClient.connect(url, { useNewUrlParser: true },function(err, client) {
+    assert.equal(null, err);
+    console.log("Connected successfully to server");
+
+    const db = client.db('sanatoriiby');
+
+
+    db.collection('prod_sanatorium').find({}, {projection:{ _id: 0 , name: 1, region: 1}} ).toArray(function (err, result){
+
+      res.send (result)
+    })
+
+
+
+
+
+
+    client.close();
+  });
+
+
+})
+
+
+
+// search
+
 app.post ('/search', async function (req, res){
 
 const { title, type,country, region, adult,children,dateCheckIn ,dateCheckOut} = req.body.serchData
