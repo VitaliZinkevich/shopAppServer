@@ -6,6 +6,8 @@ var app = express();
 var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 
+const MongoClient = require('mongodb').MongoClient;
+const assert = require('assert');
 
 
 var mongoose = require('mongoose');
@@ -69,8 +71,7 @@ res.send ({status: false, message: 'cant insert', data: addingObject})
 app.get ('/forsearchprimarydata', function (req, res) {
 
 
-  const MongoClient = require('mongodb').MongoClient;
-  const assert = require('assert');
+
 
   // Connection URL
   const url = 'mongodb://localhost:27017';
@@ -79,14 +80,14 @@ app.get ('/forsearchprimarydata', function (req, res) {
   const dbName = 'myproject';
 
   // Use connect method to connect to the server
-  MongoClient.connect(url, { useNewUrlParser: true },function(err, client) {
+  MongoClient.connect(url, /*{ useNewUrlParser: true },*/function(err, client) {
     assert.equal(null, err);
-    console.log("Connected successfully to server");
+    //console.log("Connected successfully to server");
 
     const db = client.db('sanatoriiby');
 
 
-    db.collection('prod_sanatorium').find({}, {projection:{ _id: 0 , name: 1, region: 1}} ).toArray(function (err, result){
+    db.collection('prod_sanatorium').find({}, {projection:{ _id: 0 , name: 1, region: 1, stars: 1}} ).toArray(function (err, result){
 
       res.send (result)
     })
@@ -108,8 +109,40 @@ app.get ('/forsearchprimarydata', function (req, res) {
 
 app.post ('/search', async function (req, res){
 
-const { title, type,country, region, adult,children,dateCheckIn ,dateCheckOut} = req.body.serchData
+console.log (req.body.serchData)
+console.log (req.body.selectedObjs)
 
+// search in data base after req
+
+MongoClient.connect('mongodb://localhost:27017'/*, { useNewUrlParser: true }*/,function(err, client) {
+  assert.equal(null, err);
+  //console.log("Connected successfully to server");
+
+  const db = client.db('sanatoriiby');
+
+// запросить санатории с выбранными именами иначе запросить все
+
+// учесть дополнительные фильтры по объекту типа ТИП ПИТАНИЕ , МГНОВННОЕ ПОДТВ
+// ЗВЕЗДНОСТЬ   -- !!! ОТДАТЬ НА ФРОНТ ДЛЯ ФИЛЬТРА
+
+
+  db.collection('prod_sanatorium').find({}, {projection:{ _id: 0}}).toArray(function (err, result){
+console.log (result)
+    res.send (result)
+  })
+
+
+
+
+
+
+  client.close();
+});
+
+
+
+// old version
+/*
 let accomadation =  (children) ? adult+'+'+children: adult
 
 const forDisplay = await BookingObject.find ({$or : [{regions: region}, {title: title}]})
@@ -139,5 +172,5 @@ forDisplay.splice (index,1)
 res.send ({status: true, message: 'find some to display', data:forDisplay })
 } else {
 res.send ({status: false, message: 'got no to display by this search cond', data: {} })
-}
+}*/
 })
